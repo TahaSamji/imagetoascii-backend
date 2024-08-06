@@ -2,22 +2,11 @@ const express = require('express');
 const app = express();
 const cors = require("cors");
 var asciify = require('asciify-image');
-var ansiHTML = require('ansi-html');
-
+const fileUpload = require("express-fileupload");
 var Convert = require('ansi-to-html');
 
-var convert = new Convert();
 
-
-console.log(convert.toHtml('\x1b[30mblack\x1b[37mwhite'));
 const port = 8000
-
-var options = {
-    color: true,
-    fit: 'box',
-    width: 100,
-    height: 100
-}
 
 
 
@@ -29,24 +18,79 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(fileUpload());
 
 
-app.get('/', (req, res) => {
+app.post('/AcscifywithColor', (req, res) => {
     try {
-        asciify('tmp/person.webp', options, function (err, asciified) {
-            if (err) throw err;
+        
+        if (!req.files || !req.files.uploadFile) {
+            return res.status(404).json({ msg: 'No file uploaded' });
+        }
+    
+        const myimage = req.files.uploadFile;
+        let options = {
+            color: true,
+            fit:'width',
+            width:100,
+            height:100
+          }
+       
 
-            // Print to console
-            // console.log(asciified);
-            // const tag = convert.toHtml(asciified)
-            const tag = ansiHTML(asciified)
+        myimage.mv('tmp/picture.png',  function (err) {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            asciify('tmp/picture.png', options, function (err, asciified) {
+                if (err) throw err;
+                var convert = new Convert();
+                const html = convert.toHtml(asciified)
             
-           
-            return res.send(tag);
-        });
+                return res.json({html:html,text:asciified});
+            });
+        }
+        );
 
+       
+    
     } catch (error) {
+        console.error(error);
+    }
+});
+app.post('/AcscifywithoutColor', (req, res) => {
+    try {
+        
+        if (!req.files || !req.files.uploadFile) {
+            return res.status(404).json({ msg: 'No file uploaded' });
+        }
+    
+        const myimage = req.files.uploadFile;
+      let options = {
+        color: false,
+        fit:'original',
+        width:10,
+        height:10
+      }
+       
 
+        myimage.mv('tmp/picture.png',  function (err) {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err);
+            }
+            asciify('tmp/picture.png', options, function (err, asciified) {
+                if (err) throw err;
+                var convert = new Convert();
+                const html = convert.toHtml(asciified)
+                return res.json({html:html,text:asciified});
+            });
+        }
+        );
+
+       
+    
+    } catch (error) {
         console.error(error);
     }
 });

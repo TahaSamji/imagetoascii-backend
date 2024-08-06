@@ -9,10 +9,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "ansi-html": "^0.0.9",
     "ansi-to-html": "^0.7.2",
     "asciify-image": "^0.1.10",
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-fileupload": "^1.5.1"
   }
 }
