@@ -37,12 +37,12 @@ app.post('/AcscifywithColor', (req, res) => {
           }
        
 
-        myimage.mv('tmp/picture.png',  function (err) {
+        myimage.mv('/tmp/picture.png',  function (err) {
             if (err) {
                 console.log(err);
                 return res.status(500).send(err);
             }
-            asciify('tmp/picture.png', options, function (err, asciified) {
+            asciify('/tmp/picture.png', options, function (err, asciified) {
                 if (err) throw err;
                 var convert = new Convert();
                 const html = convert.toHtml(asciified)
@@ -74,12 +74,12 @@ app.post('/AcscifywithoutColor', (req, res) => {
       }
        
 
-        myimage.mv('tmp/picture.png',  function (err) {
+        myimage.mv('/tmp/picture.png',  function (err) {
             if (err) {
                 console.log(err);
                 return res.status(500).send(err);
             }
-            asciify('tmp/picture.png', options, function (err, asciified) {
+            asciify('/tmp/picture.png', options, function (err, asciified) {
                 if (err) throw err;
                 var convert = new Convert();
                 const html = convert.toHtml(asciified)
